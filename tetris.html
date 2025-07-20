@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Exo:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>TETRIS | Advanced Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: sans-serif;
+      background: #fff0f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    h1 {
+      font-family: DOTO, sans-serif;
+     font-weight: 800;
+     color: black;
+    margin-top: 0px;
+    }
+    .switch-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1em;
+    }
+    #modeLabel {
+      font-weight: bold;
+      color: #ca298c;
+      margin-left: 10px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+      margin: 0 10px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute; content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    #gameArea {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #312e81;
+      border-radius: 10px;
+      padding: 18px;
+      box-shadow: 0 4px 20px #9333ea33;
+      margin-top: 1em;
+      margin-bottom: 2em;
+    }
+    canvas {
+      background: #18181b;
+      border: 2px solid #e11d48;
+      margin-bottom: 12px;
+      border-radius: 6px;
+      display: block;
+    }
+    #score {
+      color: #fff;
+      background: #f9a8d4;
+      padding: 0.2em 1em;
+      border-radius: 5px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    #instructions {
+      margin-top: 12px;
+      font-size: 0.98em;
+      color: #fcd34d;
+      background: #581c87;
+      padding: 6px 20px;
+      border-radius: 6px;
+      margin-bottom: 0.5em;
+      text-align: center;
+    }
+    #instructions b {
+      color: #e11d48;
+    }
+    #restartBtn {
+      background: linear-gradient(90deg,#f472b6,#818cf8);
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px #818cf833;
+      padding: 8px 30px;
+      margin-top: 0.5em;
+      font-size: 1.07em;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: filter 0.18s, background 0.23s;
+    }
+       header {
+      font-family: 'Doto', sans-serif;
+      font-size: 2cm;
+      font-weight: 900;
+      color: black
+      margin-top: 1.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    #restartBtn:hover { filter: brightness(1.08); }
+    @media (max-width:500px) {
+      #gameArea { padding: 8vw 2vw; }
+      canvas { width: 140px !important; height: 280px !important; }
+    }
+      footer {
+      margin-top: auto;
+      background-color: #0d1117;
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #ccc;
+      border-top: 2px solid #1f2a36;
+      width: calc(100% - 2cm);
+      margin-left: 1cm;
+      margin-right: 1cm;
+      margin-top: 1cm;
+      border-radius: 16px;
+    }
+    footer a {
+      color: #72a4f2;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <hEADER>TETRIS</hEADER>
+  <H1>Advanced</H1>
+  <div class="switch-container">
+    <span>Normal Mode</span>
+    <label class="switch">
+      <input type="checkbox" id="modeToggle" checked />
+      <span class="slider"></span>
+    </label>
+    <span id="modeLabel">Advanced Mode</span>
+  </div>
+  <div id="gameArea">
+    <div id="score">Score: 0</div>
+    <canvas id="tetris" width="200" height="400" tabindex="0"></canvas>
+    <button id="restartBtn">Restart</button>
+    <div id="instructions">
+      ◀️ ▶️ Left/Right &nbsp;|&nbsp; ⬇️ Down &nbsp;|&nbsp; ▲ Rotate &nbsp;|&nbsp; Space: Hard Drop <br>
+      <b>Advanced Mode:</b> Fast falling speed — react quickly!
+    </div>
+  </div>
+  <footer>
+    Made with 💓 &amp; Care by <a href="https://youtube.com/@PoorvithsLife_Official">Poorvith T.A</a>
+    <br>  <br>
+    <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support me on Ko-fi', '#72a4f2', 'O5O81GPS1N');kofiwidget2.draw();</script> 
+    <br><br>
+    © 2025 Poorvith T.A • <a href="https://ig.me/m/i_am_poorvith" target="_blank">Contact Me</a> 
+  </footer>
+  <script>
+    // Mode toggle: return to Normal Mode index.html
+    document.getElementById("modeToggle").addEventListener("change", function () {
+      if (!this.checked) {
+        window.location.href = "index.html";
+      }
+    });
+
+    // --- Tetris Logic ---
+    const ROWS = 20, COLS = 10, BLOCK = 20;
+    const COLORS = [
+      "", "#f472b6", "#818cf8", "#38bdf8", "#facc15", "#4ade80", "#a21caf", "#fcd34d"
+    ];
+    const SHAPES = [
+      [],
+      [[1,1,1,1]],          // I
+      [[2,2,0],[0,2,2]],    // Z
+      [[0,3,3],[3,3,0]],    // S
+      [[4,0,0],[4,4,4]],    // J
+      [[0,0,5],[5,5,5]],    // L
+      [[6,6],[6,6]],        // O
+      [[0,7,0],[7,7,7]]     // T
+    ];
+    const canvas = document.getElementById("tetris");
+    const ctx = canvas.getContext("2d");
+    const scoreDiv = document.getElementById('score');
+    const restartBtn = document.getElementById('restartBtn');
+
+    let arena, current, score, gameOver;
+    let dropInterval = 270; // Faster drop for advanced mode!
+    let lastTime = 0, dropCounter = 0;
+
+    function createMatrix(w, h) {
+      const arr = [];
+      while(h--) arr.push(Array(w).fill(0));
+      return arr;
+    }
+    function drawMatrix(matrix, offset) {
+      for(let y=0; y<matrix.length; ++y)
+      for(let x=0; x<matrix[y].length; ++x)
+        if(matrix[y][x]) {
+          ctx.fillStyle = COLORS[matrix[y][x]];
+          ctx.shadowColor = COLORS[matrix[y][x]];
+          ctx.shadowBlur = 12;
+          ctx.fillRect(
+            (x+offset.x)*BLOCK+1, (y+offset.y)*BLOCK+1,
+            BLOCK-2, BLOCK-2
+          );
+          ctx.shadowBlur = 0;
+        }
+    }
+    function merge(arena, piece) {
+      piece.matrix.forEach((row, dy) => {
+        row.forEach((val, dx) => {
+          if (val) arena[dy + piece.pos.y][dx + piece.pos.x] = val;
+        });
+      });
+    }
+    function collide(arena, piece) {
+      const {matrix, pos} = piece;
+      for(let y=0; y<matrix.length; ++y)
+      for(let x=0; x<matrix[y].length; ++x)
+        if(matrix[y][x] && (arena[y+pos.y] && arena[y+pos.y][x+pos.x])!==0)
+          return true;
+      return false;
+    }
+    function rotate(matrix) {
+      for(let y=0;y<matrix.length;++y)
+      for(let x=0;x<y;++x)
+        [matrix[x][y],matrix[y][x]]=[matrix[y][x],matrix[x][y]];
+      matrix.reverse();
+    }
+    function playerDrop() {
+      current.pos.y++;
+      if(collide(arena, current)) {
+        current.pos.y--;
+        merge(arena, current);
+        arenaSweep();
+        resetPiece();
+        if(collide(arena, current)) {
+          gameOver = true;
+          setTimeout(()=>alert("Game Over!\nFinal Score: "+score), 50);
+          initGame();
+          return;
+        }
+      }
+      dropCounter = 0;
+    }
+    function arenaSweep() {
+      out: for(let y=ROWS-1; y>=0; --y) {
+        for(let x=0; x<COLS; ++x) {
+          if(!arena[y][x]) continue out;
+        }
+        const row = arena.splice(y,1)[0].fill(0);
+        arena.unshift(row);
+        ++y;
+        score += 20;
+        scoreDiv.textContent = "Score: " + score;
+      }
+    }
+    function playerMove(dir) {
+      current.pos.x += dir;
+      if(collide(arena, current)) current.pos.x -= dir;
+    }
+    function playerRotate() {
+      const p = current.matrix;
+      rotate(p);
+      if(collide(arena,current)) {
+        rotate(p); rotate(p); rotate(p);
+      }
+    }
+    function resetPiece() {
+      const type = Math.floor(Math.random()*7)+1;
+      current = {
+        matrix: SHAPES[type].map(row => row.slice()),
+        pos: {x: Math.floor(COLS/2) - Math.floor(SHAPES[type][0].length/2), y: 0}
+      };
+    }
+    function draw() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "#1E293B";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      drawMatrix(arena, {x:0,y:0});
+      drawMatrix(current.matrix, current.pos);
+    }
+    function update(time=0) {
+      const deltaTime = time - lastTime;
+      lastTime = time;
+      dropCounter += deltaTime;
+      if(dropCounter > dropInterval) playerDrop();
+      draw();
+      if(!gameOver) requestAnimationFrame(update);
+    }
+    function keydown(e) {
+      if(gameOver) return;
+      if(e.key==="ArrowLeft") playerMove(-1);
+      else if(e.key==="ArrowRight") playerMove(1);
+      else if(e.key==="ArrowDown") playerDrop();
+      else if(e.key==="ArrowUp") playerRotate();
+      else if(e.code==="Space") {
+        while(!collide(arena, current)) current.pos.y++;
+        current.pos.y--;
+        playerDrop();
+      }
+      draw();
+    }
+    function initGame() {
+      arena = createMatrix(COLS,ROWS);
+      score = 0; gameOver = false;
+      scoreDiv.textContent = "Score: 0";
+      resetPiece();
+      lastTime = 0; dropCounter = 0;
+      draw();
+      requestAnimationFrame(update);
+    }
+    document.addEventListener("keydown", keydown);
+    restartBtn.onclick = () => initGame();
+    initGame();
+  </script>
+</body>
+</html>
